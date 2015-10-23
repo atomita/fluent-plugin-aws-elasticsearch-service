@@ -3,7 +3,6 @@
 require 'rubygems'
 require 'fluent/plugin/out_elasticsearch'
 require 'aws-sdk'
-require 'faraday_middleware'
 require 'faraday_middleware/aws_signers_v4'
 
 
