@@ -47,7 +47,7 @@ match ("es.**") do
 end
 ```
 
-If you use the "IAM User", please set it of "access_key_id" and "secret_access_key".
+If you use the "IAM User", please copy "access_key_id" and "secret_access_key" from a "IAM User".
 
 ## Development
 
