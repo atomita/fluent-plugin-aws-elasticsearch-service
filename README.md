@@ -36,10 +36,18 @@ match ("es.**") do
 
   endpoint do
     url "YOUR_ENDPOINT_URL"
-    region "ap-northeast-1"
+    region "YOUR_ENDPOINT_REAGION"
   end
+  # endpoint do
+  #   url "https://search-xxxxxxxx.ap-northeast-1.es.amazonaws.com"
+  #   reagion "ap-northeast-1"
+  #   access_key_id "yyyyyyyyy"      # optional
+  #   secret_access_key "zzzzzzzzz"  # optional
+  # end
 end
 ```
+
+If you use the "IAM User", please set it of "access_key_id" and "secret_access_key".
 
 ## Development
 
