@@ -55,18 +55,15 @@ module Fluent
     # get AWS Credentials
     #
     def credentials(access_key, secret_key)
-      @credentials ||= {}
-      @credentials[access_key] ||= {}
-      @credentials[access_key][secret_key] ||=
-        begin
-          credentials = nil
-          if access_key.empty? or secret_key.empty?
-            credentials   = Aws::InstanceProfileCredentials.new.credentials
-            credentials ||= Aws::SharedCredentials.new.credentials
-          end
-          credentials ||= Aws::Credentials.new access_key, secret_key
-          credentials
+      lambda do
+        credentials = nil
+        if access_key.empty? or secret_key.empty?
+          credentials   = Aws::InstanceProfileCredentials.new.credentials
+          credentials ||= Aws::SharedCredentials.new.credentials
         end
+        credentials ||= Aws::Credentials.new access_key, secret_key
+        credentials
+      end
     end
 
   end
@@ -121,7 +118,7 @@ module Fluent
                 lambda do |faraday|
                   if host[:aws_elasticsearch_service]
                     faraday.request :aws_signers_v4,
-                                    credentials: host[:aws_elasticsearch_service][:credentials],
+                                    credentials: host[:aws_elasticsearch_service][:credentials].call,
                                     service_name: 'es',
                                     region: host[:aws_elasticsearch_service][:region]
                   end
