@@ -133,3 +133,28 @@ module Fluent
 
   end
 end
+
+
+#
+# monkey patch
+#
+class FaradayMiddleware::AwsSignersV4
+
+  alias :initialize_origin_from_aws_elasticsearch_service_output :initialize
+
+  def initialize(app, options = nil)
+    super(app)
+
+    credentials = options.fetch(:credentials)
+    service_name = options.fetch(:service_name)
+    region = options.fetch(:region)
+    @signer = lambda do
+      Aws::Signers::V4.new(credentials, service_name, region)
+    end
+    def @signer.sign(req)
+      self.call.sign(req)
+    end
+
+    @net_http = app.is_a?(Faraday::Adapter::NetHttp)
+  end
+end
