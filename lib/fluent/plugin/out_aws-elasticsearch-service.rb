@@ -55,7 +55,7 @@ module Fluent
     # get AWS Credentials
     #
     def credentials(access_key, secret_key)
-      lambda do
+      calback = lambda do
         credentials = nil
         if access_key.empty? or secret_key.empty?
           credentials   = Aws::InstanceProfileCredentials.new.credentials
@@ -64,6 +64,11 @@ module Fluent
         credentials ||= Aws::Credentials.new access_key, secret_key
         credentials
       end
+      def calback.inspect
+        credentials = self.call
+        "#<#{credentials.class.name} access_key_id=#{credentials.access_key_id.inspect}>"
+      end
+      calback
     end
 
   end
