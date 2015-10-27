@@ -123,7 +123,7 @@ module Fluent
                 lambda do |faraday|
                   if host[:aws_elasticsearch_service]
                     faraday.request :aws_signers_v4,
-                                    credentials: host[:aws_elasticsearch_service][:credentials].call,
+                                    credentials: host[:aws_elasticsearch_service][:credentials],
                                     service_name: 'es',
                                     region: host[:aws_elasticsearch_service][:region]
                   end
@@ -153,12 +153,20 @@ class FaradayMiddleware::AwsSignersV4
     credentials = options.fetch(:credentials)
     service_name = options.fetch(:service_name)
     region = options.fetch(:region)
-    @signer = lambda do
-      Aws::Signers::V4.new(credentials, service_name, region)
-    end
-    def @signer.sign(req)
-      self.call.sign(req)
-    end
+    @signer =
+      begin
+        if credentials.is_a?(Proc)
+          signer = lambda do
+            Aws::Signers::V4.new(credentials.call, service_name, region)
+          end
+          def signer.sign(req)
+            self.call.sign(req)
+          end
+          signer
+        else
+          Aws::Signers::V4.new(credentials, service_name, region)
+        end
+      end
 
     @net_http = app.is_a?(Faraday::Adapter::NetHttp)
   end
