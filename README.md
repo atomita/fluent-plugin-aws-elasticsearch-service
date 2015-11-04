@@ -40,7 +40,7 @@ match ("es.**") do
   end
   # endpoint do
   #   url "https://search-xxxxxxxx.ap-northeast-1.es.amazonaws.com"
-  #   reagion "ap-northeast-1"
+  #   region "ap-northeast-1"
   #   access_key_id "yyyyyyyyy"      # optional
   #   secret_access_key "zzzzzzzzz"  # optional
   # end
