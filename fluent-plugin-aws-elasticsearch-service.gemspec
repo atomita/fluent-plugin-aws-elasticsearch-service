@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "fluent-plugin-aws-elasticsearch-service"
-  spec.version       = "0.1.3"
+  spec.version       = "0.1.4"
   spec.authors       = ["atomita"]
   spec.email         = ["sleeping.cait.sith+gh@gmail.com"]
 
@@ -26,5 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "fluentd", "~> 0"
   spec.add_runtime_dependency "fluent-plugin-elasticsearch", "~> 1.0"
   spec.add_runtime_dependency "aws-sdk", "~> 2"
-  spec.add_runtime_dependency "faraday_middleware-aws-signers-v4", "~> 0"
+  spec.add_runtime_dependency "faraday_middleware-aws-signers-v4", ">= 0.1.0", "< 0.1.2"
 end
