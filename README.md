@@ -50,6 +50,7 @@ The first step is to assign an IAM instance role `ROLE` to your EC2 instances. N
 
 You should then configure a policy for the ES cluster policy thus, with appropriate substitutions for the capitalized terms:
 
+```json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -79,6 +80,7 @@ You should then configure a policy for the ES cluster policy thus, with appropri
     }
   ]
 }
+```
 
 This will allow your fluentd hosts (by virtue of the possession of the role) and any traffic coming from the specified IP addresses (you querying Kibana) to access the various endpoints. Whilst not ideally secure (both the fluentd and Kibana boxes should ideally be restricted to the verbs they require) it should allow you to get up and ingesting logs without anything getting in your way, before you tighten down the policy.
 
