@@ -16,38 +16,73 @@ In your fluentd configration, use `type aws-elasticsearch-service`.
 
 example:
 
-```rb
-source do
-  type :tail
-  format :apache
+```ruby
+<source>
+  type tail
+  format apache
   time_format "%d/%b/%Y:%T %z"
   path "/var/log/nginx/access.log"
   pos_file "/var/log/td-agent/nginx.access.pos"
   tag "es.nginx.access"
-end
+</source>
 
-match ("es.**") do
+<match es.**>
   type "aws-elasticsearch-service"
   type_name "access_log"
   logstash_format true
   include_tag_key true
   tag_key "@log_name"
-  flush_interval "10s"
+  flush_interval 1s
 
-  endpoint do
-    url "YOUR_ENDPOINT_URL"
-    region "YOUR_ENDPOINT_REAGION"
-  end
-  # endpoint do
-  #   url "https://search-xxxxxxxx.ap-northeast-1.es.amazonaws.com"
-  #   region "ap-northeast-1"
-  #   access_key_id "yyyyyyyyy"      # optional
-  #   secret_access_key "zzzzzzzzz"  # optional
-  # end
-end
+  <endpoint>
+    url https://CLUSTER_ENDPOINT_URL
+    region eu-west-1
+    # access_key_id "secret"
+    # secret_access_key "seekret"
+  </endpoint>
+</match>
 ```
 
-If you use the "IAM User", please copy "access_key_id" and "secret_access_key" from a "IAM User".
+## IAM
+If you do not wish to use credentials in your configuration via the `access_key_id` and `secret_access_key` options you should use IAM policies.
+
+The first step is to assign an IAM instance role `ROLE` to your EC2 instances. Name it appropriately. The role should contain no policy: we're using the possession of the role as the authenticating factor and placing the policy against the ES cluster.
+
+You should then configure a policy for the ES cluster policy thus, with appropriate substitutions for the capitalized terms:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT:role/ROLE"
+      },
+      "Action": "es:*",
+      "Resource": "arn:aws:es:eu-west-1:ACCOUNT:domain/ES_DOMAIN/*"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "es:*",
+      "Resource": "arn:aws:es:eu-west-1:ACCOUNT:domain/ES_DOMAIN/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": [
+            "1.2.3.4/32",
+            "5.6.7.8/32"
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+This will allow your fluentd hosts (by virtue of the possession of the role) and any traffic coming from the specified IP addresses (you querying Kibana) to access the various endpoints. Whilst not ideally secure (both the fluentd and Kibana boxes should ideally be restricted to the verbs they require) it should allow you to get up and ingesting logs without anything getting in your way, before you tighten down the policy.
 
 ## Development
 
