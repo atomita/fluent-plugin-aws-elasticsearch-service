@@ -16,6 +16,8 @@ module Fluent
       config_param :url, :string
       config_param :access_key_id, :string, :default => ""
       config_param :secret_access_key, :string, :default => ""
+      config_param :assume_role_arn, :string, :default => nil
+      config_param :assume_role_session_name, :string, :default => "fluentd"
     end
 
 
@@ -35,7 +37,7 @@ module Fluent
             end
 
             host[:aws_elasticsearch_service] = {
-              :credentials => credentials(ep[:access_key_id], ep[:secret_access_key]),
+              :credentials => credentials(ep),
               :region => ep[:region]
             }
             
@@ -54,14 +56,26 @@ module Fluent
     #
     # get AWS Credentials
     #
-    def credentials(access_key, secret_key)
+    def credentials(opts)
       calback = lambda do
         credentials = nil
-        if access_key.empty? or secret_key.empty?
-          credentials   = Aws::InstanceProfileCredentials.new.credentials
-          credentials ||= Aws::SharedCredentials.new.credentials
+        unless opts[:access_key_id].empty? or opts[:secret_access_key].empty?
+          credentials = Aws::Credentials.new access_key, secret_key
+        else
+          if opts[:assume_role_arn].nil?
+            credentials = Aws::SharedCredentials.new({
+                             retries: 2
+                          }).credentials
+            credentials ||= Aws::InstanceProfileCredentials.new.credentials
+          else
+            credentials = sts_credential_provider({
+                            role_arn: opts[:assume_role_arn],
+                            role_session_name: opts[:assume_role_session_name],
+                            region: opts[:region]
+                          }).credentials
+          end
         end
-        credentials ||= Aws::Credentials.new access_key, secret_key
+        raise "No valid AWS credentials found." unless credentials.set?
         credentials
       end
       def calback.inspect
@@ -69,6 +83,11 @@ module Fluent
         "#<#{credentials.class.name} access_key_id=#{credentials.access_key_id.inspect}>"
       end
       calback
+    end
+
+    def sts_credential_provider(opts)
+      # AssumeRoleCredentials is an auto-refreshing credential provider
+      @sts ||= Aws::AssumeRoleCredentials.new(opts)
     end
 
   end
