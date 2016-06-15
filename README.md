@@ -84,6 +84,48 @@ You should then configure a policy for the ES cluster policy thus, with appropri
 
 This will allow your fluentd hosts (by virtue of the possession of the role) and any traffic coming from the specified IP addresses (you querying Kibana) to access the various endpoints. Whilst not ideally secure (both the fluentd and Kibana boxes should ideally be restricted to the verbs they require) it should allow you to get up and ingesting logs without anything getting in your way, before you tighten down the policy.
 
+Additionally, you can use an STS assumed role as the authenticating factor and instruct the plugin to assume this role. This is useful for cross-account access and when assigning a standard role is not possible. The endpoint configuration looks like:
+
+```ruby
+ <endpoint>
+    url https://CLUSTER_ENDPOINT_URL
+    region eu-west-1
+    assume_role_arn arn:aws:sts::ACCOUNT:assumed-role/ROLE
+    assume_role_session_name SESSION_ID # Defaults to fluentd if omitted
+  </endpoint>
+```
+
+The policy attached to your AWS Elasticsearch cluster then becomes something like:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:sts::ACCOUNT:assumed-role/ROLE/SESSION_ID"
+      },
+      "Action": "es:*",
+      "Resource": "arn:aws:es:eu-west-1:ACCOUNT:domain/ES_DOMAIN/*"
+    }
+  ]
+}
+```
+
+You'll need to ensure that the environment in which the fluentd plugin runs has the capability to assume this role, by attaching a policy something like this to the instance profile:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Resource": "arn:aws:iam::ACCOUNT:role/ROLE"
+    }
+}
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
