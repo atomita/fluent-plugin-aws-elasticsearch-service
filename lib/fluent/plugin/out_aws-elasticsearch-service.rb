@@ -26,7 +26,7 @@ module Fluent
     #
     def get_connection_options
       raise "`endpoint` require." if @endpoint.empty?
-      
+
       hosts =
         begin
           @endpoint.map do |ep|
@@ -40,11 +40,11 @@ module Fluent
               :credentials => credentials(ep),
               :region => ep[:region]
             }
-            
+
             host
           end
         end
-      
+
       {
         hosts: hosts
       }
@@ -60,7 +60,7 @@ module Fluent
       calback = lambda do
         credentials = nil
         unless opts[:access_key_id].empty? or opts[:secret_access_key].empty?
-          credentials = Aws::Credentials.new access_key, secret_key
+          credentials = Aws::Credentials.new opts[:access_key_id], opts[:secret_access_key]
         else
           if opts[:assume_role_arn].nil?
             credentials = Aws::SharedCredentials.new({
