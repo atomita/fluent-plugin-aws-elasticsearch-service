@@ -90,7 +90,7 @@ Additionally, you can use an STS assumed role as the authenticating factor and i
  <endpoint>
     url https://CLUSTER_ENDPOINT_URL
     region eu-west-1
-    assume_role_arn arn:aws:sts::ACCOUNT:assumed-role/ROLE
+    assume_role_arn arn:aws:sts::ACCOUNT:role/ROLE
     assume_role_session_name SESSION_ID # Defaults to fluentd if omitted
   </endpoint>
 ```
