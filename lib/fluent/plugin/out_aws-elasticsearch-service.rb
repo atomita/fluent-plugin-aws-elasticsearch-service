@@ -87,7 +87,7 @@ module Fluent
 
     def sts_credential_provider(opts)
       # AssumeRoleCredentials is an auto-refreshing credential provider
-      @sts ||= Aws::AssumeRoleCredentials.new(opts)
+      Aws::AssumeRoleCredentials.new(opts)
     end
 
   end
