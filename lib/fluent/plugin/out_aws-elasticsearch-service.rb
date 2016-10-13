@@ -66,6 +66,7 @@ module Fluent
             credentials = Aws::SharedCredentials.new({
                              retries: 2
                           }).credentials
+            credentials ||= Aws::ECSCredentials.new.credentials
             credentials ||= Aws::InstanceProfileCredentials.new.credentials
           else
             credentials = sts_credential_provider({
