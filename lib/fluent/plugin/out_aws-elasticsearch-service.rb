@@ -20,6 +20,12 @@ module Fluent
       config_param :assume_role_session_name, :string, :default => "fluentd"
     end
 
+    # here overrides default value of reload_connections to false because
+    # AWS Elasticsearch Service doesn't return addresses of nodes and Elasticsearch client
+    # fails to reload connections properly. This ends up "temporarily failed to flush the buffer"
+    # error repeating forever. See this discussion for details:
+    # https://discuss.elastic.co/t/elasitcsearch-ruby-raises-cannot-get-new-connection-from-pool-error/36252
+    config_set_default :reload_connections, false
 
     #
     # @override
