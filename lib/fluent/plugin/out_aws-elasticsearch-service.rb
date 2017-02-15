@@ -80,7 +80,7 @@ module Fluent
       end
       def calback.inspect
         credentials = self.call
-        "#<#{credentials.class.name} access_key_id=#{credentials.access_key_id.inspect}>"
+        credentials.credentials.inspect
       end
       calback
     end
