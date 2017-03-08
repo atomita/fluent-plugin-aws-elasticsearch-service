@@ -67,10 +67,11 @@ module Fluent
             if opts[:ecs_container_credentials_relative_uri].nil?
               credentials = Aws::SharedCredentials.new({retries: 2}).credentials
               credentials ||= Aws::InstanceProfileCredentials.new.credentials
+              credentials ||= Aws::ECSCredentials.new.credentials
             else
               credentials = Aws::ECSCredentials.new({
                 credential_path: opts[:ecs_container_credentials_relative_uri]
-              })
+              }).credentials
             end
           else
             credentials = sts_credential_provider({
