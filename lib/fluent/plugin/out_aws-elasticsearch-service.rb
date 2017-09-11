@@ -6,10 +6,10 @@ require 'aws-sdk'
 require 'faraday_middleware/aws_signers_v4'
 
 
-module Fluent
+module Fluent::Plugin
   class AwsElasticsearchServiceOutput < ElasticsearchOutput
 
-    Plugin.register_output('aws-elasticsearch-service', self)
+    Fluent::Plugin.register_output('aws-elasticsearch-service', self)
 
     config_section :endpoint do
       config_param :region, :string
@@ -48,6 +48,10 @@ module Fluent
       {
         hosts: hosts
       }
+    end
+
+    def write(chunk)
+      super
     end
 
 
