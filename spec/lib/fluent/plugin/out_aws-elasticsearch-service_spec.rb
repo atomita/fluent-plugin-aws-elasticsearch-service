@@ -16,19 +16,19 @@ describe Fluent::Plugin::AwsElasticsearchServiceOutput do
     end
 
     it "`endpoint` is array." do
-      instance.instance_variable_get(:@endpoint).map do |ep|
+      instance.endpoint.map do |ep|
         expect(ep[:url]).to eq "xxxxxxxxxxxxxxxxxxxx"
       end
     end
 
     it "should get region" do
-      instance.instance_variable_get(:@endpoint).map do |ep|
+      instance.endpoint.map do |ep|
         expect(ep[:region]).to eq "us-east-1"
       end
     end
 
     it "should get default values" do
-      instance.instance_variable_get(:@endpoint).map do |ep|
+      instance.endpoint.map do |ep|
         expect(ep[:access_key_id]).to eq ""
         expect(ep[:secret_access_key]).to eq ""
         expect(ep[:assume_role_arn]).to eq nil
