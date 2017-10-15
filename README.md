@@ -126,6 +126,14 @@ You'll need to ensure that the environment in which the fluentd plugin runs has 
 }
 ```
 
+## Troubleshooting
+
+* "Elasticsearch::Transport::Transport::Errors::Forbidden" error="[403]" even after verifying the access keys/roles/policies.
+   * Ensure you don't have a trailing slash on the endpoint URL in your fluentd configuration file (see CLUSTER_ENDPOINT_URL above).
+
+*  "ElasticsearchIllegalArgumentException[explicit index in bulk is not allowed]"
+   * Check that `rest.action.multi.allow_explicit` is set true on your Amazon ES domain (verify in the console - there's a bug in Terraform, https://github.com/hashicorp/terraform/issues/3980).
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
