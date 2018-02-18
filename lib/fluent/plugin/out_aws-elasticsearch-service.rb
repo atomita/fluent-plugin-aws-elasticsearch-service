@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'fluent/plugin/out_elasticsearch'
 require 'aws-sdk'
-require 'faraday_middleware/aws_signers_v4'
+require 'faraday_middleware/aws_sigv4'
 
 
 module Fluent::Plugin
@@ -157,7 +157,7 @@ module Fluent::Plugin
               def __aws_elasticsearch_service_setting(host, &block)
                 lambda do |faraday|
                   if host[:aws_elasticsearch_service]
-                    faraday.request :aws_signers_v4,
+                    faraday.request :aws_sigv4,
                                     credentials: host[:aws_elasticsearch_service][:credentials],
                                     service_name: 'es',
                                     region: host[:aws_elasticsearch_service][:region]
@@ -178,7 +178,7 @@ end
 #
 # monkey patch
 #
-class FaradayMiddleware::AwsSignersV4
+class FaradayMiddleware::AwsSigV4
 
   alias :initialize_origin_from_aws_elasticsearch_service_output :initialize
 
