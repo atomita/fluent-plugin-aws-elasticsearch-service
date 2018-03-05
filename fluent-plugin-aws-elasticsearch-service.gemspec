@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "fluent-plugin-aws-elasticsearch-service"
-  spec.version       = "1.0.0"
+  spec.version       = "1.0.1"
   spec.authors       = ["atomita"]
   spec.email         = ["sleeping.cait.sith+gh@gmail.com"]
 

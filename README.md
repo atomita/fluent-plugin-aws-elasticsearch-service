@@ -95,6 +95,19 @@ Additionally, you can use an STS assumed role as the authenticating factor and i
   </endpoint>
 ```
 
+For non aws but you still want to assume role, configure assume_role_arn, access_key_id and secret_access_key:
+
+```ruby
+ <endpoint>
+    url https://CLUSTER_ENDPOINT_URL
+    region eu-west-1
+    assume_role_arn arn:aws:sts::ACCOUNT:role/ROLE
+    assume_role_session_name SESSION_ID # Defaults to fluentd if omitted
+    access_key_id "secret"
+    secret_access_key "seekret"
+  </endpoint>
+```
+
 The policy attached to your AWS Elasticsearch cluster then becomes something like:
 
 ```json
@@ -148,4 +161,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/atomit
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

@@ -71,7 +71,19 @@ module Fluent::Plugin
       calback = lambda do
         credentials = nil
         unless opts[:access_key_id].empty? or opts[:secret_access_key].empty?
-          credentials = Aws::Credentials.new opts[:access_key_id], opts[:secret_access_key]
+          unless opts[:assume_role_arn].nil?
+            credentials = sts_credential_provider({
+                            client: Aws::STS::Client.new(
+                                  access_key_id: opts[:access_key_id],
+                                  secret_access_key: opts[:secret_access_key]
+                                ),
+                            role_arn: opts[:assume_role_arn],
+                            role_session_name: opts[:assume_role_session_name],
+                            region: opts[:region]
+                          }).credentials
+          else
+            credentials = Aws::Credentials.new opts[:access_key_id], opts[:secret_access_key]
+          end
         else
           if opts[:assume_role_arn].nil?
             if opts[:ecs_container_credentials_relative_uri].nil?
