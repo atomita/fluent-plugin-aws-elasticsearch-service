@@ -2,8 +2,8 @@
 
 require 'rubygems'
 require 'fluent/plugin/out_elasticsearch'
-require 'aws-sdk'
-require 'faraday_middleware/aws_signers_v4'
+require 'aws-sdk-elasticsearchservice'
+require 'faraday_middleware/aws_sigv4'
 
 
 module Fluent::Plugin
