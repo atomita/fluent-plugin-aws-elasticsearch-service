@@ -192,14 +192,14 @@ class FaradayMiddleware::AwsSigV4
       begin
         if credentials.is_a?(Proc)
           signer = lambda do
-            Aws::Signers::V4.new(credentials.call, service_name, region)
+            Aws::Sigv4::Signer.new(service: service_name, region: region, credentials: credentials.call)
           end
-          def signer.sign(req)
-            self.call.sign(req)
+          def signer.sign_request(req)
+            self.call.sign_request(req)
           end
           signer
         else
-          Aws::Signers::V4.new(credentials, service_name, region)
+          Aws::Sigv4::Signer.new(service: service_name, region: region, credentials: credentials)
         end
       end
 
