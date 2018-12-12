@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require 'fluent/plugin/out_elasticsearch'
-require 'aws-sdk'
+require 'aws-sdk-core'
 require 'faraday_middleware/aws_sigv4'
 
 

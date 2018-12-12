@@ -26,6 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "test-unit", "~> 3.0"
   spec.add_runtime_dependency "fluentd", "~> 0"
   spec.add_runtime_dependency "fluent-plugin-elasticsearch", "~> 2.4.0"
-  spec.add_runtime_dependency "aws-sdk", "~> 3"
+  spec.add_runtime_dependency "aws-sdk-core", "~> 3"
   spec.add_runtime_dependency "faraday_middleware-aws-sigv4", ">= 0.2.4", "< 0.3.0"
 end
