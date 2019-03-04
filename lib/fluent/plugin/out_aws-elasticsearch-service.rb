@@ -31,7 +31,7 @@ module Fluent::Plugin
     #
     # @override
     #
-    def get_connection_options
+    def get_connection_options(con_host=nil)
       raise "`endpoint` require." if @endpoint.empty?
 
       hosts =
