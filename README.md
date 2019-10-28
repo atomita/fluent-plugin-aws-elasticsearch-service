@@ -126,6 +126,20 @@ You'll need to ensure that the environment in which the fluentd plugin runs has 
 }
 ```
 
+### EKS
+If you want to use IAM roles for service accounts on Amazon EKS clusters, please refer to the official documentation and specify a Service Account for your fluentd Pod.
+
+Then, the endpoint configuration looks like:
+
+```ruby
+<endpoint>
+  url https://CLUSTER_ENDPOINT_URL
+  region eu-west-1
+  assume_role_arn "#{ENV['AWS_ROLE_ARN']}"
+  assume_role_web_identity_token_file "#{ENV['AWS_WEB_IDENTITY_TOKEN_FILE']}"
+</endpoint>
+```
+
 ## Troubleshooting
 
 * "Elasticsearch::Transport::Transport::Errors::Forbidden" error="[403]" even after verifying the access keys/roles/policies.
