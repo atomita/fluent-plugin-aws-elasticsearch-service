@@ -19,6 +19,7 @@ module Fluent::Plugin
       config_param :assume_role_arn, :string, :default => nil
       config_param :ecs_container_credentials_relative_uri, :string, :default => nil #Set with AWS_CONTAINER_CREDENTIALS_RELATIVE_URI environment variable value
       config_param :assume_role_session_name, :string, :default => "fluentd"
+      config_param :assume_role_web_identity_token_file, :string, :default => nil
     end
 
     # here overrides default value of reload_connections to false because
@@ -84,11 +85,19 @@ module Fluent::Plugin
               }).credentials
             end
           else
-            credentials = sts_credential_provider({
-                            role_arn: opts[:assume_role_arn],
-                            role_session_name: opts[:assume_role_session_name],
-                            region: opts[:region]
-                          }).credentials
+            if opts[:assume_role_web_identity_token_file].nil?
+              credentials = sts_credential_provider({
+                              role_arn: opts[:assume_role_arn],
+                              role_session_name: opts[:assume_role_session_name],
+                              region: opts[:region]
+                            }).credentials
+            else
+              credentials = sts_web_identity_credential_provider({
+                              role_arn: opts[:assume_role_arn],
+                              web_identity_token_file: opts[:assume_role_web_identity_token_file],
+                              region: opts[:region]
+                            }).credentials
+            end
           end
         end
         raise "No valid AWS credentials found." unless credentials.set?
@@ -104,6 +113,11 @@ module Fluent::Plugin
     def sts_credential_provider(opts)
       # AssumeRoleCredentials is an auto-refreshing credential provider
       @sts ||= Aws::AssumeRoleCredentials.new(opts)
+    end
+
+    def sts_web_identity_credential_provider(opts)
+      # AssumeRoleWebIdentityCredentials is an auto-refreshing credential provider
+      @sts ||= Aws::AssumeRoleWebIdentityCredentials.new(opts)
     end
 
   end
