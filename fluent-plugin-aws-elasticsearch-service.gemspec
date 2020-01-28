@@ -20,12 +20,12 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.10"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "bundler", [">= 1.10", "< 3"]
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "test-unit", "~> 3.0"
   spec.add_runtime_dependency "fluentd", [">= 0.14.15", "< 2"]
-  spec.add_runtime_dependency "fluent-plugin-elasticsearch", [">= 3.3.0", "< 4"]
+  spec.add_runtime_dependency "fluent-plugin-elasticsearch", [">= 3.3.0", "< 5"]
   spec.add_runtime_dependency "aws-sdk-core", "~> 3"
   spec.add_runtime_dependency "faraday_middleware-aws-sigv4", "~> 0.3.0"
 end
