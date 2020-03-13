@@ -17,6 +17,7 @@ module Fluent::Plugin
       config_param :access_key_id, :string, :default => ""
       config_param :secret_access_key, :string, :default => "", secret: true
       config_param :assume_role_arn, :string, :default => nil
+      config_param :ecs_container_credentials_relative_uri, :string, :default => nil #Set with AWS_CONTAINER_CREDENTIALS_RELATIVE_URI environment variable value
       config_param :assume_role_session_name, :string, :default => "fluentd"
       config_param :assume_role_web_identity_token_file, :string, :default => nil
     end
@@ -73,8 +74,8 @@ module Fluent::Plugin
         unless opts[:access_key_id].empty? or opts[:secret_access_key].empty?
           credentials = Aws::Credentials.new opts[:access_key_id], opts[:secret_access_key]
         else
-          aws_container_credentials_relative_uri = ENV["AWS_CONTAINER_CREDENTIALS_RELATIVE_URI"]
           if opts[:assume_role_arn].nil?
+            aws_container_credentials_relative_uri = opts[:ecs_container_credentials_relative_uri] || ENV["AWS_CONTAINER_CREDENTIALS_RELATIVE_URI"]
             if aws_container_credentials_relative_uri.nil?
               credentials = Aws::SharedCredentials.new({retries: 2}).credentials
               credentials ||= Aws::InstanceProfileCredentials.new.credentials
