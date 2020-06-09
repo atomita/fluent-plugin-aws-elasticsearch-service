@@ -20,6 +20,7 @@ module Fluent::Plugin
       config_param :ecs_container_credentials_relative_uri, :string, :default => nil #Set with AWS_CONTAINER_CREDENTIALS_RELATIVE_URI environment variable value
       config_param :assume_role_session_name, :string, :default => "fluentd"
       config_param :assume_role_web_identity_token_file, :string, :default => nil
+      config_param :sts_credentials_region, :string, :default => nil
     end
 
     # here overrides default value of reload_connections to false because
@@ -86,17 +87,18 @@ module Fluent::Plugin
               }).credentials
             end
           else
+
             if opts[:assume_role_web_identity_token_file].nil?
               credentials = sts_credential_provider({
                               role_arn: opts[:assume_role_arn],
                               role_session_name: opts[:assume_role_session_name],
-                              region: opts[:region]
+                              region: sts_credentials_region(opts)
                             }).credentials
             else
               credentials = sts_web_identity_credential_provider({
                               role_arn: opts[:assume_role_arn],
                               web_identity_token_file: opts[:assume_role_web_identity_token_file],
-                              region: opts[:region]
+                              region: sts_credentials_region(opts)
                             }).credentials
             end
           end
@@ -109,6 +111,10 @@ module Fluent::Plugin
         credentials.credentials.inspect
       end
       calback
+    end
+
+    def sts_credentials_region(opts)
+      opts[:sts_credentials_region] || opts[:region]
     end
 
     def sts_credential_provider(opts)

@@ -92,6 +92,7 @@ Additionally, you can use an STS assumed role as the authenticating factor and i
     region eu-west-1
     assume_role_arn arn:aws:sts::ACCOUNT:role/ROLE
     assume_role_session_name SESSION_ID # Defaults to fluentd if omitted
+    sts_credentials_region us-west-2 # Defaults to region if omitted
   </endpoint>
 ```
 
