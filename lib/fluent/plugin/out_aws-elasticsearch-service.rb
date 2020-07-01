@@ -36,6 +36,10 @@ module Fluent::Plugin
     def get_connection_options(con_host=nil)
       raise "`endpoint` require." if @endpoint.empty?
 
+      @endpoint.map do |ep|
+        raise Fluent::ConfigError, "Ensure you don't have a trailing slash on the endpoint URL in your fluentd configuration." if ep[:url].end_with?("/")
+      end
+
       hosts =
         begin
           @endpoint.map do |ep|
