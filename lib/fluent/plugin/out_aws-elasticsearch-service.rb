@@ -14,7 +14,7 @@ module Fluent::Plugin
     config_section :endpoint do
       config_param :region, :string
       config_param :url, :string
-      config_param :access_key_id, :string, :default => ""
+      config_param :access_key_id, :string, :default => "", secret: true
       config_param :secret_access_key, :string, :default => "", secret: true
       config_param :assume_role_arn, :string, :default => nil
       config_param :ecs_container_credentials_relative_uri, :string, :default => nil #Set with AWS_CONTAINER_CREDENTIALS_RELATIVE_URI environment variable value
