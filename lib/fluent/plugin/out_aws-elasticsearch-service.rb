@@ -140,10 +140,7 @@ module Fluent::Plugin
   class ElasticsearchOutput
     module Elasticsearch
 
-      module Client
-        include ::Elasticsearch::Client
-        extend self
-      end
+      class Client < ::Elasticsearch::Client; end
 
       module Transport
         module Transport
