@@ -140,7 +140,11 @@ module Fluent::Plugin
   class ElasticsearchOutput
     module Elasticsearch
 
-      class Client < ::Elasticsearch::Client; end
+      class Client < ::Elasticsearch::Client
+        def verify_with_version_or_header(body, version, headers)
+          @verified = true
+        end
+      end
 
       module Transport
         module Transport
