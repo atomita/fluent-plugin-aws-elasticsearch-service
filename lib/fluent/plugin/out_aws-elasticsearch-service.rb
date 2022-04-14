@@ -184,7 +184,7 @@ module Fluent::Plugin
                   if host[:aws_elasticsearch_service]
                     faraday.request :aws_sigv4,
                                     credentials: host[:aws_elasticsearch_service][:credentials],
-                                    service_name: 'es',
+                                    service: 'es',
                                     region: host[:aws_elasticsearch_service][:region]
                   end
                   block.call faraday
